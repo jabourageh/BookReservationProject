@@ -1,0 +1,23 @@
+{% extends "faculty/base.html" %}
+{% block content %}
+
+    <div class="container mt-5">
+        <div class = "card">
+            <div class = "card-header">
+                <h4> Please log in </h4>
+            </div>
+            <div class = "card-body">
+                <form class= "form" method = "POST" action=" {% url 'login' %}">
+                    {% csrf_token %}
+                    <table class = "table">
+                        {{ form }}
+                    </table>
+                    <input class =" btn btn-primary" type="submit" value = "Submit" />
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

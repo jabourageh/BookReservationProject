@@ -1,0 +1,105 @@
+{% extends "faculty/base.html" %}
+
+{% block content %}
+
+    <div class = "container mt-5">
+        <div class = "row">
+            <div class = "col-md">
+                <select id="studentselect" class = "form-select">
+                    {% for row in student %}
+                    <option value ="{{ row.studentid }}">{{ row.firstname}} {{ row.lastname }} </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class = "col-md">
+                <select id="bookselect" class = "form-select">
+                    <option value="">-- Select a Book --</option>
+                    {% for row in book %}
+                    <option value = "{{ row.bookid }}"> {{ row.bookname }} </option>
+                    {% endfor %}
+                </select>
+            </div>
+         </div>
+    </div>
+
+    <div class = "container text-center mt-5">
+        <button id = "btnreserve" class = "btn btn-primary">Reserve</button>
+    </div>
+
+    <div class = "container text-center mt-3 ">
+        <h5 id ="firsth4"></h5>
+
+    </div>
+
+    <div class = "container mt-5">
+        <table class = "table">
+            <thead>
+                <tr>
+                    <th> Student First Name</th>
+                    <th> Student Last Name</th>
+                    <th> Book Name</th>
+                </tr>
+            </thead>
+            <tbody> 
+                {% for row in bookreservation %}
+                <tr>
+                    <td> {{ row.studentid.firstname }}</td>
+                    <td> {{ row.studentid.lastname }} </td>
+                    <td> {{ row.bookid.bookname }} </td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#btnreserve").click(function(){
+                console.log("Reserve button clicked!"); // DEBUG
+
+                let studentid = $("#studentselect").val();
+                let bookid = $("#bookselect").val();
+                console.log("Student:", studentid, "Book:", bookid);
+
+                if (!studentid || !bookid) {
+                    $("#firsth4").html("Please select BOTH a student and a book.");
+                    return;
+                }
+
+                $.ajax({
+                    url: "{% url 'saveinfo' %}",
+                    data: { studentid: $("#studentselect").val(), bookid: $("#bookselect").val() },
+                    success: function(data) {
+                        if(data == "success"){
+                            window.location = "{% url 'bookreservation' %}"
+                        } 
+                        else if (data == "already_exists") {
+                            $("#firsth4").html("Error: This specific book is already reserved by this student.");
+                        }
+                        else if (data == "limit_reached") {
+                            $("#firsth4").html("Error: Student has reached the maximum reservation limit (4 books).");
+                        }
+                        else if (data == "book_unavailable") {
+                            $("#firsth4").html("Error: This book is already reserved by another student.");
+                        }
+                        else {
+                            // General or unknown error case
+                            $("#firsth4").html("An unexpected error occurred during reservation.");
+                        }
+                    },
+                    error: function() {
+                        $("#firsth4").html("Error reserving book. Reservation for this book already exists");
+                    }
+            });
+
+        });
+    });
+
+</script>
+
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

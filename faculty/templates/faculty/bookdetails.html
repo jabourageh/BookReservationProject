@@ -1,0 +1,42 @@
+{% extends "faculty/base.html" %}
+{% block content %}
+        <div class = "container-fluid mt-5">
+            <h2> Book Information</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th> Book ID </th>
+                        <th> Book Name </th>
+                        <th> Author Name </th>
+                        <th> Currently Checked Out </th>
+                        <th> Number of Times Checked Out </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in bookdetails %}
+                    <tr> 
+                        <td>{{ row.bookid }}</td>
+                        <td>{{ row.bookname }}</td> 
+                        <td>{{ row.authorname }}</td> 
+                        <td>{{ row.currentlycheckedout }}</td>
+                        <td>{{ row.numberoftimescheckedout }}</td> 
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="pagination">
+                <span class="step-links"> 
+                    {% if bookdetails.has_previous %}
+                        <a href="?page=1">First</a>
+                        <a href ="?page= {{ bookdetails.previous_page_number}}">Previous</a>"
+                    {% endif %}
+                    Page {{ bookdetails.number}} of {{bookdetails.paginator.num_pages}}
+                    {% if bookdetails.has_next %}
+                        <a href="?page= {{ bookdetails.next_page_number}}">Next</a>
+                        <a href="?page={{ bookdetails.paginator.num_pages}}">Last</a>
+                        {% endif %}
+                </span>
+            </div>
+        </div>
+{% endblock %}
+ 
